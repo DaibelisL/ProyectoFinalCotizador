@@ -66,16 +66,17 @@ const Form = () => {
             fetchLocal(selectPropiedadRef.current, selectUbicacionRef.current);
         }
         fetch(URL)
-        .then((response) => response.json())
-        .then((data) => setDatos(data)) 
-        .catch((error) => {
-            alert(
-            'Error inesperado',
-            'Se ha producido un error. Intente nuevamente, por favor.',
-            'error'
-            );
-            console.error('Se ha producido un error inesperado. Intente nuevamente por favor.', error);
-        });
+        .then((response) => {
+            if (!response.ok) {
+              throw new Error('La solicitud falló con estado: ' + response.status);
+            }
+            return response.json();
+          })
+            .then((data) => setDatos(data)) 
+            .catch((error) => {
+                console.error('Error en la solicitud fetch:', error);
+                alert('Error inesperado', 'Se ha producido un error. Intente nuevamente, por favor.', 'error');
+              });
         cargarCombo(datosPropiedad, selectPropiedadRef.current);
         cargarCombo(datosUbicacion, selectUbicacionRef.current);
     }, []);
