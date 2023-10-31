@@ -21,7 +21,7 @@ const datosUbicacion = [
     { tipo: 'Costa Atlántica', factor: 1.29 },
     { tipo: 'Patagonia', factor: 1.00 },
 ];
-const URL = "./../datos.json";
+const av = "./../datos.json";
 const costoM2 = 35.86;
 
 class Cotizador {
@@ -65,7 +65,7 @@ const Form = () => {
         if (selectPropiedadRef.current && selectUbicacionRef.current) {
             fetchLocal(selectPropiedadRef.current, selectUbicacionRef.current);
         }
-        fetch(URL)
+        fetch(av)
         .then((response) => {
             if (!response.ok) {
               throw new Error('La solicitud falló con estado: ' + response.status);
