@@ -1,4 +1,9 @@
 [[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
+  from = "/js/*"  
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/css/*"  
+  to = "/index.html"
+  status = 200
