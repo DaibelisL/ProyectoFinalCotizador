@@ -21,7 +21,7 @@ const datosUbicacion = [
     { tipo: 'Costa Atlántica', factor: 1.29 },
     { tipo: 'Patagonia', factor: 1.00 },
 ];
-const av = "./../datos.json";
+const av = "https://daibelisl.github.io/datosJSONCotizador/datos.json";
 const costoM2 = 35.86;
 
 class Cotizador {
