@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ButtonForm from '../components/button_form';
 import { toast } from 'react-hot-toast';
-
+import SelectPropiedad from '../components/selectpropiedad';
+import SelectUbicacion from '../components/selectubicacion';
+import InputMetros from '../components/inputmetros';
 
 const datosPropiedad = [
     { tipo: '...', factor: '' },
@@ -14,6 +16,7 @@ const datosPropiedad = [
     { tipo: 'Local Comercial', factor: 1.41 },
     { tipo: 'Depósito Logística', factor: 1.92 },
 ];
+
 const datosUbicacion = [
     { tipo: '...', factor: '' },
     { tipo: 'CABA', factor: 1.13 },
@@ -21,6 +24,7 @@ const datosUbicacion = [
     { tipo: 'Costa Atlántica', factor: 1.29 },
     { tipo: 'Patagonia', factor: 1.00 },
 ];
+
 const av = "https://daibelisl.github.io/datosJSONCotizador/datos.json";
 const costoM2 = 35.86;
 
@@ -60,6 +64,7 @@ const Form = () => {
     const [cotizacionExitosa, setCotizacionExitosa] = useState(false);
     const selectPropiedadRef = useRef(null);
     const selectUbicacionRef = useRef(null);
+    const inputMetros2Ref = useRef(null);
 
     useEffect(() => {
         if (selectPropiedadRef.current && selectUbicacionRef.current) {
@@ -72,13 +77,16 @@ const Form = () => {
                 }
                 return response.json();
             })
-            .then((data) => setDatos(data)) 
+            .then((data) => {
+                setDatos(data);         
+                cargarCombo(datosPropiedad, selectPropiedadRef.current);
+                cargarCombo(datosUbicacion, selectUbicacionRef.current);
+            }) 
             .catch((error) => {
                 console.error('Error en la solicitud fetch:', error);
                 alert('Error inesperado', 'Se ha producido un error. Intente nuevamente, por favor.', 'error');
             });
-        cargarCombo(datosPropiedad, selectPropiedadRef.current);
-        cargarCombo(datosUbicacion, selectUbicacionRef.current);
+
     }, []);
 
     const datosCompletos = () =>
@@ -161,84 +169,56 @@ const Form = () => {
                 },
             });
         }
-    };    
-    
+    };
 
     return (
-            <div className="container-fluid formulario card text-center pb-2 scale-up-center col-md-12 p-0 pt-4 pb-4">
-                <h1 className="center separador">Seguros del hogar</h1>
-                <form className="p-4.m-auto" onSubmit={(e) => e.preventDefault()}> 
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="mb-3">
-                                <label htmlFor="propiedad">Selecciona el tipo de propiedad</label>
-                                <select
-                                    id="propiedad"
-                                    value={selectPropiedad}
-                                    onChange={(e) => setSelectPropiedad(e.target.value)}
-                                    ref={selectPropiedadRef}
-                                >
-                                <option value="...">...</option>
-                                    {datosPropiedad.map((elemento) => (
-                                        <option key={elemento.tipo} value={elemento.factor}>
-                                            {elemento.tipo}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="col-md-12">
-                            <div className="mb-3">
-                                <label htmlFor="ubicacion">Selecciona su ubicación</label>
-                                <select
-                                    id="ubicacion"
-                                    value={selectUbicacion}
-                                    onChange={(e) => setSelectUbicacion(e.target.value)}
-                                    ref={selectUbicacionRef}
-                                >
-                                <option value="...">...</option>
-                                    {datosUbicacion.map((elemento) => (
-                                        <option key={elemento.tipo} value={elemento.factor}>
-                                            {elemento.tipo}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="col-md-12">
-                            <div className="mb-3">
-                                <label htmlFor="metros2">Ingresa los Metros cuadrados:</label>
-                                <input
-                                    type="number"
-                                    id="metros2"
-                                    value={inputMetros2}
-                                    min="20"
-                                    max="500"
-                                    required
-                                    onChange={(e) => setInputMetros2(e.target.value)}
-                                />
-                            </div>
-                        </div>
+        <div className="container-fluid formulario card text-center pb-2 scale-up-center col-md-12 p-0 pt-4 pb-4">
+            <h1 className="center separador">Seguros del hogar</h1>
+            <form className="p-4.m-auto" onSubmit={(e) => e.preventDefault()}> 
+                <div className="row">
+                    <div className="col-md-12">
+                        <SelectPropiedad
+                            selectPropiedad={selectPropiedad}
+                            setSelectPropiedad={setSelectPropiedad}
+                            datosPropiedad={datosPropiedad}
+                            ref={selectPropiedadRef}
+                        />
                     </div>
-                    <ButtonForm realizarCotizacion={realizarCotizacion} />
-                    <div className="col-md-12 pt-3 pb-3">
-                        <p className="importe">
-                            Precio estimado: $ <span id="valorPoliza">{valorPoliza}</span>
-                            {btnEnviarVisible && (
-                                <span className="guardar" title="Guardar en historial" onClick={guardarEnHistorial}>
-                                💾
-                                </span>
-                            )}
-                        </p>
+                    <div className="col-md-12">
+                        <SelectUbicacion
+                            selectUbicacion={selectUbicacion}
+                            setSelectUbicacion={setSelectUbicacion}
+                            datosUbicacion={datosUbicacion}
+                            ref={selectUbicacionRef}
+                        />
                     </div>
-                    <div className="col-md-12 pt-2 pb-3">
-                        <Link to="/historial" className='historialink'>
-                            Ver Historial
-                        </Link>
+                    <div className="col-md-12">
+                        <InputMetros
+                            inputMetros2={inputMetros2}
+                            setInputMetros2={setInputMetros2}
+                            ref={inputMetros2Ref}
+                        />
                     </div>
-                </form>
-            </div>
-            );
+                </div>
+                <ButtonForm realizarCotizacion={realizarCotizacion} />
+                <div className="col-md-12 pt-3 pb-3">
+                    <p className="importe">
+                        Precio estimado: $ <span id="valorPoliza">{valorPoliza}</span>
+                        {btnEnviarVisible && (
+                            <span className="guardar" title="Guardar en historial" onClick={guardarEnHistorial}>
+                            💾
+                            </span>
+                        )}
+                    </p>
+                </div>
+                <div className="col-md-12 pt-2 pb-3">
+                    <Link to="/historial" className='historialink'>
+                        Ver Historial
+                    </Link>
+                </div>
+            </form>
+        </div>
+    );
 }
 
-export default Form
+export default Form;
